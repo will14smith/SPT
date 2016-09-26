@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+	<title>Timer</title>
+	<script>		
+		function setColour(el, colour) { el.style.backgroundColor = colour; }
+		function setText(el, text) { el.innerHTML = text; }
+		function setState(el, {colour, text}) { setColour(el, colour); setText(el, text); }
+		
+		function rest(time) { return { colour: '#5a4', text: 'Rest', time: time } }
+		function endurance(time) { return { colour: '#a45', text: 'Draw & Hold', time: time } }
+		function power(time) { return { colour: '#45a', text: 'Draw Up', time: time } }
+		
+		function set(fn, time, restTime, count) {
+			let result = [];
+		
+			for(let i = 0; i < count; i++) {
+				const subresults = fn(time)
+			
+				result.push(...(Array.isArray(subresults) ? subresults : [subresults]));
+				result.push(rest(restTime));
+			}
+			
+			return result;
+		}
+		
+		const schedule = [
+			rest(15),
+			...set(endurance, 20, 20*2, 10),
+			...set(() => set(power, 4, 0.5, 8), 0, 4*60, 3),
+		];
+		
+		console.log(schedule);
+		
+		document.addEventListener('DOMContentLoaded', () => {
+			const el = document.body
+		
+			let index = 0;
+			let time = 0;
+			let state = schedule[index];
+			
+			function next() {
+				if (time <= 0) {
+					if (index == schedule.length) {
+						setState(el, { colour: '#000', text: 'Done!' });
+						return;
+					}
+				
+					state = schedule[index++];							
+					time = state.time;
+				}
+				
+				const text = state.text + '<br />' + 'for ' + (time--) + ' seconds' + '<br /><small>' + index + ' / ' + schedule.length + '</small>';
+				
+				setState(el, { colour: state.colour, text: text });
+			
+				setTimeout(next, 1000);
+			}
+			
+			next();
+		});
+		 
+	</script>
+	<style>
+		html { height: 100%; }
+	
+		body {
+			font-family: sans-serif;
+			font-size: 5em;
+			text-align: center;
+			color: #fff;
+			
+			position: absolute; 
+			top: 50%;
+			transform: translateY(-50%);
+			width: 100%;
+		}
+		
+		small { font-size: 0.5em; }
+	</style>	
+</head>
+<body>
+
+</body>
+</html>
