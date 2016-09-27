@@ -11,11 +11,11 @@
 		function endurance(time) { return { colour: '#a45', text: 'Draw & Hold', time: time } }
 		function power(time) { return { colour: '#45a', text: 'Draw Up', time: time } }
 		
-		function set(fn, time, restTime, count) {
+		function set(setFn, {setTime, restTime, count}) {
 			let result = [];
 		
 			for(let i = 0; i < count; i++) {
-				const subresults = fn(time)
+				const subresults = setFn(setTime)
 			
 				result.push(...(Array.isArray(subresults) ? subresults : [subresults]));
 				result.push(rest(restTime));
@@ -26,12 +26,10 @@
 		
 		const schedule = [
 			rest(15),
-			...set(endurance, 20, 20*2, 10),
-			...set(() => set(power, 4, 0.5, 8), 0, 4*60, 3),
+			...set(endurance, {setTime: 20, restTime: 20*2, count: 10}),
+			...set(() => set(power, {setTime: 4, restTime: 0.5, count: 8}), {restTime: 4*60, count: 3}),
 		];
-		
-		console.log(schedule);
-		
+				
 		document.addEventListener('DOMContentLoaded', () => {
 			const el = document.body
 		
