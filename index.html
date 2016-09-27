@@ -17,17 +17,16 @@
 			for(let i = 0; i < count; i++) {
 				const subresults = setFn(setTime)
 			
-				result.push(...(Array.isArray(subresults) ? subresults : [subresults]));
 				result.push(rest(restTime));
+				result.push(...(Array.isArray(subresults) ? subresults : [subresults]));
 			}
 			
 			return result;
 		}
 		
 		const schedule = [
-			rest(15),
 			...set(endurance, {setTime: 20, restTime: 20*2, count: 10}),
-			...set(() => set(power, {setTime: 4, restTime: 0.5, count: 8}), {restTime: 4*60, count: 3}),
+			...set(() => set(power, {setTime: 5, restTime: 1, count: 8}), {restTime: 4*60, count: 3}),
 		];
 				
 		document.addEventListener('DOMContentLoaded', () => {
